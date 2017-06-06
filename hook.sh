@@ -11,7 +11,15 @@ deploy_challenge() {
 		echo ""
 		echo -n "Press enter to continue..."
 		read tmp
-		echo ""
+        while true; do
+            local DNSTXT=$(dig @$(dig +short NS ${1} | head -1) +short TXT _acme-challenge.${1} | head -1)
+            if [ "$DNSTXT" = \"${3}\" ]; then
+                break;
+            fi
+            echo DNS record "$DNSTXT" not match \"${3}\". Wait for 10 seconds.
+            sleep 10
+        done;
+        echo ""
 }
 
 clean_challenge() {
