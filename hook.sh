@@ -12,7 +12,8 @@ deploy_challenge() {
 		echo -n "Press enter to continue..."
 		read tmp
         while true; do
-            local DNSTXT=$(dig @$(dig +short NS ${1} | head -1) +short TXT _acme-challenge.${1} | head -1)
+            echo "DNSTXT=\$(dig +short +trace TXT _acme-challenge.${1} | tail -1 | cut -d" " -f2)"
+            local DNSTXT=$(dig +short +trace TXT _acme-challenge.${1} | tail -1 | cut -d" " -f2)
             if [ "$DNSTXT" = \"${3}\" ]; then
                 break;
             fi
